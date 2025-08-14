@@ -67,7 +67,6 @@ df['col'] = pd.to_datetime(df['col'])   # convert to datetime
 # --- String Cleaning ---
 df['col'] = df['col'].str.strip()                   # trim spaces
 df['col'] = df['col'].str.lower()                   # lowercase
-df['col'] = df['col'].str.replace('old', 'new', regex=True)  # regex replace
 df['col'] = df['col'].str.split(',')                 # split into list by delimiter
 df['first'] = df['col'].str.split().str[0]           # split by space & take first word
 df['col'] = df['col'].str.replace('old', 'new', regex=True)  # regex replace
