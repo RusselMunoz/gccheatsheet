@@ -172,3 +172,47 @@ plt.show()
 
 # --- Save Figure ---
 plt.savefig("plot.png", dpi=300)
+
+# --- Useful Patterns for Cleaning ---
+pattern_price = r'(\d[\d,]*)'     # numbers with optional commas
+pattern_float = r'\d+\.\d+'       # decimal numbers
+pattern_word  = r'[A-Za-z]+'      # only letters
+pattern_units = r'(\d+)\s*(sq\.?\s*ft|sqm)'  # number + unit
+pattern_email = r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
+pattern_url   = r'https?://\S+'   # http or https URL
+
+# --- Examples ---
+re.findall(r"\d+", "abc123def456")            # ['123', '456']
+re.sub(r"\s+", " ", "Too   many   spaces")    # 'Too many spaces'
+re.findall(r"^[A-Z]\w+", "Hello World")       # ['Hello']
+re.findall(pattern_price, "BDT 29,00,000/-")  # ['29,00,000']
+
+# ==============================
+# 🔍 Pandas String + Regex
+# ==============================
+
+# Extract first number from string
+df['num'] = df['text'].str.extract(r'(\d[\d,]*)')[0].str.replace(',', '', regex=False)
+
+# Extract all numbers from string
+df['nums'] = df['text'].str.findall(r'\d[\d,]*')
+
+# Remove all non-digits
+df['clean'] = df['text'].str.replace(r'\D+', '', regex=True)
+
+# Keep only letters and spaces
+df['letters'] = df['text'].str.replace(r'[^A-Za-z\s]', '', regex=True)
+
+# Match rows with email pattern
+df[df['text'].str.contains(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', regex=True)]
+
+# Split string by multiple delimiters
+df['split'] = df['text'].str.split(r'[,;|]')  # comma, semicolon, or |
+
+# Conditional clean: remove 'BDT' and commas, keep only numbers
+df['price'] = (
+    df['price']
+    .str.replace(r'BDT|,', '', regex=True)
+    .str.extract(r'(\d[\d,]*)')[0]
+    .str.replace(',', '', regex=False)
+)
