@@ -1,0 +1,172 @@
+# ==============================
+# 📊 Pandas Basics
+# ==============================
+
+import pandas as pd
+
+# --- Read / Write ---
+df = pd.read_csv("file.csv")           # read CSV
+df.to_csv("file.csv", index=False)     # write CSV (no index)
+
+# --- Inspect Data ---
+df.head()         # first 5 rows
+df.info()         # summary of dataframe
+df.describe()     # statistics for numeric columns
+df.shape          # (rows, columns)
+df.columns        # list of column names
+
+# --- Select Data ---
+df['col']                        # single column (Series)
+df[['col1', 'col2']]              # multiple columns
+df.iloc[0]                        # row by index position
+df.loc[0, 'col']                   # specific cell by label
+
+# --- Filter Rows ---
+df[df['col'] > 10]                 # condition
+df[(df['A'] > 5) & (df['B'] < 3)]  # multiple conditions
+
+# --- Sort ---
+df.sort_values('col', ascending=False)
+
+# --- Group By ---
+df.groupby('col')['val'].mean()        # mean per group
+df.groupby(['A', 'B']).sum()           # sum per multi-group
+
+# --- Apply Function ---
+df['new'] = df['old'].apply(lambda x: x*2)
+
+# --- Merge / Concatenate ---
+pd.merge(df1, df2, on='key')           # SQL-style join
+pd.concat([df1, df2])                  # append rows
+
+# ==============================
+# 🧹 Pandas Data Cleaning
+# ==============================
+
+# --- Missing Data ---
+df.isna().sum()                        # NaN count per column
+df.dropna()                            # drop rows with NaN
+df.dropna(subset=['col'])               # drop NaN only if in 'col'
+df.fillna(0)                            # replace NaN with 0
+df.fillna(df['col'].mean())             # replace NaN with mean
+df['col'].fillna(method='ffill')        # forward fill
+df['col'].fillna(method='bfill')        # backward fill
+
+# --- Duplicates ---
+df.duplicated()                         # boolean mask for duplicates
+df.drop_duplicates()                    # remove duplicate rows
+
+# --- Column Operations ---
+df.rename(columns={'old': 'new'}, inplace=True) # rename column
+df['col'] = df['col'].astype(str)       # change data type
+df['col'] = pd.to_datetime(df['col'])   # convert to datetime
+
+# --- String Cleaning ---
+df['col'] = df['col'].str.strip()                   # trim spaces
+df['col'] = df['col'].str.lower()                   # lowercase
+df['col'] = df['col'].str.replace('old', 'new', regex=True)  # regex replace
+df['col'] = df['col'].str.split(',')                 # split into list by delimiter
+df['first'] = df['col'].str.split().str[0]           # split by space & take first word
+df['col'] = df['col'].str.replace('old', 'new', regex=True)  # regex replace
+
+# --- Conditional Replace ---
+df.loc[df['col'] > 100, 'col'] = 100    # cap values
+
+# --- Regex in Pandas ---
+df['num'] = df['text'].str.extract(r'(\d+)')        # extract digits
+df[df['text'].str.contains(r'^A', regex=True)]      # rows starting with 'A'
+
+# ==============================
+# 🔢 NumPy
+# ==============================
+
+import numpy as np
+
+# --- Array Creation ---
+np.array([1, 2, 3])
+np.zeros((3, 3))
+np.ones((2, 2))
+np.arange(0, 10, 2)       # start, stop, step
+np.linspace(0, 1, 5)      # evenly spaced
+
+# --- Shape / Reshape ---
+arr.shape
+arr.reshape(2, 3)
+arr.flatten()
+
+# --- Indexing / Slicing ---
+arr[0, 1]                 # element at row 0, col 1
+arr[:, 0]                  # first column
+arr[1:3, :]                # rows 1-2, all columns
+
+# --- Math ---
+np.sum(arr)
+np.mean(arr)
+np.std(arr)
+np.max(arr)
+np.min(arr)
+np.dot(a, b)               # matrix multiplication
+np.matmul(a, b)            # same as dot for 2D
+
+# --- Random ---
+np.random.rand(3, 3)       # random floats [0,1)
+np.random.randint(0, 10, (2, 3))  # random ints
+np.random.seed(0)          # reproducible results
+
+# ==============================
+# 🔍 Regex in Python (re module)
+# ==============================
+
+import re
+
+# --- Basic Functions ---
+re.search(pattern, string)         # first match object
+re.findall(pattern, string)        # list of all matches
+re.sub(pattern, repl, string)      # replace pattern with repl
+
+# --- Common Patterns ---
+# \d   digit       \D   non-digit
+# \w   word char   \W   non-word char
+# \s   whitespace  \S   non-whitespace
+# ^ start of string, $ end of string
+# [a-z] range, [^a-z] NOT range
+# + one or more, * zero or more, ? zero or one
+# {m} exactly m times, {m,n} m to n times
+
+# --- Examples ---
+re.findall(r"\d+", "abc123def456")            # ['123', '456']
+re.sub(r"\s+", " ", "Too   many   spaces")    # 'Too many spaces'
+re.findall(r"^[A-Z]\w+", "Hello World")       # ['Hello']
+
+# ==============================
+# 📈 Matplotlib
+# ==============================
+
+import matplotlib.pyplot as plt
+
+# --- Line Plot ---
+plt.plot(x, y, label='Line')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.title('My Plot')
+plt.legend()
+plt.show()
+
+# --- Scatter Plot ---
+plt.scatter(x, y)
+
+# --- Bar Plot ---
+plt.bar(categories, values)
+
+# --- Histogram ---
+plt.hist(data, bins=10)
+
+# --- Multiple Plots ---
+plt.subplot(1, 2, 1)      # rows, cols, index
+plt.plot(x, y1)
+plt.subplot(1, 2, 2)
+plt.plot(x, y2)
+plt.show()
+
+# --- Save Figure ---
+plt.savefig("plot.png", dpi=300)
