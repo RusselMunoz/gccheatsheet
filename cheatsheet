@@ -79,6 +79,110 @@ df['num'] = df['text'].str.extract(r'(\d+)')        # extract digits
 df[df['text'].str.contains(r'^A', regex=True)]      # rows starting with 'A'
 
 # ==============================
+# 🔍 Pandas String + Regex
+# ==============================
+
+# Extract first number from string
+df['num'] = df['text'].str.extract(r'(\d[\d,]*)')[0].str.replace(',', '', regex=False)
+
+# Extract all numbers from string
+df['nums'] = df['text'].str.findall(r'\d[\d,]*')
+
+# Remove all non-digits
+df['clean'] = df['text'].str.replace(r'\D+', '', regex=True)
+
+# Keep only letters and spaces
+df['letters'] = df['text'].str.replace(r'[^A-Za-z\s]', '', regex=True)
+
+# Match rows with email pattern
+df[df['text'].str.contains(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', regex=True)]
+
+# Split string by multiple delimiters
+df['split'] = df['text'].str.split(r'[,;|]')  # comma, semicolon, or |
+
+# Conditional clean: remove 'BDT' and commas, keep only numbers
+df['price'] = (
+    df['price']
+    .str.replace(r'BDT|,', '', regex=True)
+    .str.extract(r'(\d[\d,]*)')[0]
+    .str.replace(',', '', regex=False)
+)
+
+# ==============================
+# 🔄 Pandas Reshaping
+# ==============================
+
+# --- Melt (Wide → Long) ---
+# Converts columns into rows (unpivot)
+pd.melt(df, id_vars=['id'], value_vars=['col1', 'col2'], 
+        var_name='variable', value_name='value')
+
+# Example:
+# Input:
+#    id  col1  col2
+# 0   1    10    20
+# 1   2    30    40
+#
+# Output:
+#    id variable  value
+# 0   1    col1     10
+# 1   2    col1     30
+# 2   1    col2     20
+# 3   2    col2     40
+
+
+# --- Pivot (Long → Wide) ---
+# Reshape so that unique values in one column become columns
+df.pivot(index='id', columns='variable', values='value')
+
+# Example:
+# Input:
+#    id variable  value
+# 0   1    col1     10
+# 1   2    col1     30
+# 2   1    col2     20
+# 3   2    col2     40
+#
+# Output:
+# variable  col1  col2
+# id                    
+# 1           10    20
+# 2           30    40
+
+
+# --- Pivot Table (Aggregation) ---
+# Like Excel pivot table — can aggregate with sum, mean, etc.
+df.pivot_table(index='id', columns='variable', values='value', aggfunc='sum')
+
+# Multiple aggregations:
+df.pivot_table(index='id', columns='variable', values='value', aggfunc=['mean', 'max'])
+
+
+# --- Stack (Wide → Long for MultiIndex) ---
+# Moves column labels into a new inner row index
+df.stack()
+
+# Example:
+# variable  col1  col2
+# id                    
+# 1           10    20
+# 2           30    40
+# .stack() →
+# id          
+# 1  col1    10
+#    col2    20
+# 2  col1    30
+#    col2    40
+
+
+# --- Unstack (Long → Wide for MultiIndex) ---
+# Opposite of stack — moves inner row index to columns
+df.unstack()
+
+# Works well when reversing stack() operations
+
+
+# ==============================
 # 🔢 NumPy
 # ==============================
 
@@ -186,33 +290,3 @@ re.findall(r"\d+", "abc123def456")            # ['123', '456']
 re.sub(r"\s+", " ", "Too   many   spaces")    # 'Too many spaces'
 re.findall(r"^[A-Z]\w+", "Hello World")       # ['Hello']
 re.findall(pattern_price, "BDT 29,00,000/-")  # ['29,00,000']
-
-# ==============================
-# 🔍 Pandas String + Regex
-# ==============================
-
-# Extract first number from string
-df['num'] = df['text'].str.extract(r'(\d[\d,]*)')[0].str.replace(',', '', regex=False)
-
-# Extract all numbers from string
-df['nums'] = df['text'].str.findall(r'\d[\d,]*')
-
-# Remove all non-digits
-df['clean'] = df['text'].str.replace(r'\D+', '', regex=True)
-
-# Keep only letters and spaces
-df['letters'] = df['text'].str.replace(r'[^A-Za-z\s]', '', regex=True)
-
-# Match rows with email pattern
-df[df['text'].str.contains(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', regex=True)]
-
-# Split string by multiple delimiters
-df['split'] = df['text'].str.split(r'[,;|]')  # comma, semicolon, or |
-
-# Conditional clean: remove 'BDT' and commas, keep only numbers
-df['price'] = (
-    df['price']
-    .str.replace(r'BDT|,', '', regex=True)
-    .str.extract(r'(\d[\d,]*)')[0]
-    .str.replace(',', '', regex=False)
-)
