@@ -99,13 +99,10 @@ df[df['text'].str.contains(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', re
 
 # Split string by multiple delimiters
 df['split'] = df['text'].str.split(r'[,;|]')  # comma, semicolon, or |
+df[['firstname', 'surname']] = df['fullname'].str.split(' ', n=1, expand=True)
 
 # Conditional clean: remove 'BDT' and commas, keep only numbers
-df['price'] = (
-    df['price']
-    .str.replace(r'BDT|,', '', regex=True)
-    .str.extract(r'(\d[\d,]*)')[0]
-    .str.replace(',', '', regex=False)
+df['price'] = (df['price'].str.replace(r'BDT|,', '', regex=True).str.extract(r'(\d[\d,]*)')[0].str.replace(',', '', regex=False)
 )
 
 # ==============================
