@@ -252,7 +252,9 @@ plt.plot(x, y, label='Line')
 plt.xlabel('X-axis')
 plt.ylabel('Y-axis')
 plt.title('My Plot')
-plt.legend()
+plt.legend()                         # show legend
+plt.legend(loc='upper left')         # position: 'best' (auto), 'upper right', etc.
+plt.legend(title='My Legend')        # add title to legend
 plt.show()
 
 # --- Scatter Plot ---
@@ -287,3 +289,39 @@ re.findall(r"\d+", "abc123def456")            # ['123', '456']
 re.sub(r"\s+", " ", "Too   many   spaces")    # 'Too many spaces'
 re.findall(r"^[A-Z]\w+", "Hello World")       # ['Hello']
 re.findall(pattern_price, "BDT 29,00,000/-")  # ['29,00,000']
+
+# --- Grid ---
+plt.grid(True)                       # turn on grid
+plt.grid(axis='y', linestyle='--')   # grid only for y-axis with dashed style
+
+# --- Figure Size ---
+plt.figure(figsize=(8, 5))           # width, height in inches
+
+# --- Colors ---
+plt.plot(x, y, color='red')          # named color
+plt.plot(x, y, color='#1f77b4')      # HEX color
+
+# --- Line Styles ---
+plt.plot(x, y, linestyle='-')        # solid
+plt.plot(x, y, linestyle='--')       # dashed
+plt.plot(x, y, linestyle='-.')       # dash-dot
+plt.plot(x, y, linestyle=':')        # dotted
+
+# --- Markers ---
+plt.plot(x, y, marker='o')           # circle
+plt.plot(x, y, marker='s')           # square
+plt.plot(x, y, marker='^')           # triangle
+plt.plot(x, y, marker='x')           # cross
+plt.plot(x, y, marker='D')           # diamond
+
+# --- Line Width & Marker Size ---
+plt.plot(x, y, linewidth=2, markersize=8)
+
+# --- Titles & Labels ---
+plt.title('My Chart', fontsize=14)
+plt.xlabel('X-axis', fontsize=12)
+plt.ylabel('Y-axis', fontsize=12)
+
+# --- Ticks ---
+plt.xticks(rotation=45)              # rotate x-axis labels
+plt.yticks(fontsize=10)
